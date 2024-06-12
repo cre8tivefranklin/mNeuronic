@@ -1,0 +1,25 @@
+            mnemonic handling
+            ----------------------------------------
+
+            <TextInput
+              style={styles.input}
+              editable
+              multiline
+              numberOfLines={5}
+              maxLength={200}
+              placeholder="Enter text (0-200 characters)"
+              value={inputText}
+              onChangeText={setInputText}
+            />
+            <TouchableOpacity style={styles.nav_Outter}onPress={handleGetMnemonic}>
+              <Text style = {styles.nav}>Get Mnemonic</Text>
+            </TouchableOpacity>
+            {mnemonicResponse ? (
+              <Text style={styles.response}>{mnemonicResponse}</Text>
+            ) : null}
+            {error ? (
+              <Text style={styles.error}>{error}</Text>
+            ) : null}
+            
+            ------------------------------------------
+        

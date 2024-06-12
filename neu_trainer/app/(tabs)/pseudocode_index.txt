@@ -1,0 +1,230 @@
+DATE: 5/19/2024
+DEADLINE: 7/20/2024
+PROJECT_NAME: Neu_Trainer
+POTENTIAL_ALT_NAMES: (M)neuronic, (M)Neuroware.
+API: React
+OBJECTIVE: "Create a mobile app that can help people with ADHD learn skills for memorization. For example, mnemonics, recognition of patterns, or color encoding." Ultimately, this body of work will serve as the bedrock for my cognitive augmentation work in the long run.
+DISCLAIMER: Neu_Trainer is NOT:
+    - A cure/or treatment for neurodivergence.
+    - An IQ booster.
+    - An Alternative to medication.
+    - An end-all-be-all-solution.
+Neu_Trainer is a way to assist ADHD people like myself(and a victim of repetive TBI throughout childhood) engage in the development/honing of their memorization skills. It is literally the sum total of memorization techniques that have helped me learn difficult STEM subjects like chemistry and organic chemistry, or programming.
+
+|
+|
+|
+|
+|
+|
+|
+|
+
+PROJECT_Front_End(GUI)
+DECLARATIONS-------------
+all necessary variables and components:(buttons, labels, text boxes)
+    Page
+        Title: HEADER
+        About: BUTTON
+            summary: SUB_HEADER
+            resources: SUB_HEADER
+            citations: SUB_HEADER
+        Start: BUTTON
+            grid: BUTTON
+                USER_input
+            mnemonics: BUTTON
+                USER_input
+        Results Tab
+            Results
+                Graph(Grid)
+        var row
+        var grid
+        var mnemonics
+        var stopwatch
+        var mnemonicParams
+        var course, subject
+-------------------------
+
+INITIALIZATIONS----------
+the main window and layout
+    <view.page> |===> GUI
+    Show Page, mobile screen
+        Show Title for all pages
+        Show summary, resources, citations for About
+        Show exercises: Grid and Mnemenocs for Start
+-------------------------
+
+SET----------------------
+the properties of each component (text, size, position, visibility, variable assignments)
+    Page
+        color: #cfe2f3
+        border: solid 2px #5da6e7
+        margin: 2.5px
+        text-align: center
+
+        Title
+            constant visibility
+            fixed position at the top
+            2.5% padding
+            font size: 25px
+        About
+            centered, below Title 
+            2.5% padding
+            font size: 20px
+
+            1-Summary, 2-Resources, 3-Citations
+                padding 3%
+                text-align center
+            Summary, Resources
+                font size: 15px
+            Citations
+                font size 5px (or subscript)
+        Start
+            grid exercise
+                margin row[n]: 10px
+                color for all row[n]: white
+                color 1/9 row[n]: color black
+            mnemonics exercise
+                margin 5px
+                mnemonic prompt: nth word
+                mnemonic option: any \n
+                    mnemonic option selected
+                        correct: or wrong
+        Results Tab
+            color: red
+            border radius: 50%
+            border solid black 0.5px
+            width, height: 10px
+            display hidden
+            
+            Results
+                display: hidden
+                border solid #5da6e7 2px
+
+-------------------------
+
+|
+|
+|
+|
+|
+|
+|
+|
+
+PROJECT_Back_End
+INPUT--------------------
+    Title
+    About
+        Resources
+        Citations
+    Start
+        Grid
+            Grid selection 
+        Mnemonics
+            mnemonics selection
+    Results Tab
+        Results
+-------------------------
+
+PROCESSING---------------
+    row = [ [], [], [] ]
+    grid = [row[0], row[1], row[2]]
+    mnemonicParams = []
+    mnemonics = [ [], [], [] ] |===> or ai generation
+    score = []
+
+    gemini API-Key: AIzaSyBU264g39c0P2fxQs5pNt3r0mfKUJg6KxU
+
+    t = 0
+    timer = range: [0,4]seconds
+    stopwatch ===> [0,t]seconds
+    stopwatch = []
+    course = input: "Course"
+    subject = input: "Subject"
+
+    if title press/click
+        show page
+        close about, start, Results
+    else if about press/click
+        close page, start , Results
+        show about 
+            summary 
+            resources 
+            citations  
+    else if start press/click 
+        close page, about, Results
+        show 
+            grid
+            mnemonics
+            if grid press/click
+                function grid_inputs()
+                    while t = 0
+                        t+=1
+                        show grid[0]
+                        show grid[1]
+                        show grid[2]
+                    // iterate through grid |===> grid[n[m]].push(@)//
+                    stopwatch.push( t-1 )
+                    //----- t-1 since the 1s for starting doesnt count towards the count for the attempt -----//
+                        if (t > 1 second)
+                            grid_selection(USER_input)
+                            if grid_selection = grid[n[m]]
+                                show: correct
+                                break
+                                ask: attempt new trial?
+                                if yes
+                                    break
+                                    grid_inputs()
+                            else
+                                show: incorrect
+                                ask: reattempt?
+                                if no
+                                    break
+                                    run title |===> returns to home page
+                    set Results Tab: visible
+                    return stopwatch
+            else if mnemonics press/click
+            function mnemonics_inputs()
+                    show "Enter the following:"
+                    course
+                    subject
+                    gemini.generate(course, subject)
+                    input: "Additional input?"
+                    if yes
+                        input "Same course and subject?"
+                        if yes
+                            gemini.generate(course, subject)
+                        else
+                            show "Enter the following:"
+                            course
+                            subject
+    else if Results Tab press/click 
+        show Results
+        close title, about, start
+        
+    function start_inputs()
+        grid_data = grid_inputs()
+        //grid_inputs() = stopwatch//
+
+        mnemonic_data = []
+        mnemonic_data.push(gemini.generate)
+        //create component |===> graph_grid: (x = index[grid], y = grid_result[k])
+        data = [grid_data, mnemonic_data]
+        return data
+    start_inputs()
+-------------------------
+
+OUTPUT-------------------
+    function show_data()
+        data = start_inputs()
+        show graph_grid |===> data[0][0,1]
+        show mnemonic_data |===> data[1].length()
+-------------------------
+
+
+//api testing in bash:
+curl \
+  -H 'Content-Type: application/json' \
+  -d '{"contents":[{"parts":[{"text":"Explain how AI works"}]}]}' \
+  -X POST 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=AIzaSyBU264g39c0P2fxQs5pNt3r0mfKUJg6KxU'
